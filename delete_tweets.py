@@ -1,9 +1,15 @@
-from get_tweets import get_tweets
-from env_variables import *
+from collections.abc import Iterable
+from typing import Union
+
 from auth import authenticate
+from env_variables import *
+from get_tweets import get_tweets
+from interfaces.interfaces import Keywords
+from interfaces.interfaces import KeywordsSubscript
+from interfaces.interfaces import Oauth
 
 
-def delete_by_keywords(oauth, keywords):
+def delete_by_keywords(oauth, keywords: Union[Iterable[Union[KeywordsSubscript, bytearray, bytes, str]], Keywords]):
     data = get_tweets(oauth, 1000)
     for tweet in data:
         for word in keywords:
@@ -11,7 +17,7 @@ def delete_by_keywords(oauth, keywords):
                 delete_tweet(oauth, tweet["id"])
 
 
-def delete_tweet(oauth, tweet_id):
+def delete_tweet(oauth: Oauth, tweet_id):
     response = oauth.delete("https://api.twitter.com/2/tweets/" + str(tweet_id))
 
     if response.status_code != 200:
